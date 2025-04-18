@@ -66,10 +66,10 @@ def creating_plotly_chart(df):
     import plotly.express as px
 
     
-    chosen_asins = st.sidebar.multiselect(
+    chosen_asins = st.multiselect(
         "Select ASIN(s)", options=df["(Child) ASIN"].unique(), default=df["(Child) ASIN"].unique()
     )
-    date_min, date_max = st.sidebar.date_input(
+    date_min, date_max = st.date_input(
         "Date range", [df["date"].min(), df["date"].max()]
     )
 
