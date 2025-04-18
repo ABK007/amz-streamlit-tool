@@ -58,5 +58,57 @@ def create_linear_regression_chart(df):
 
     plt.tight_layout()
     st.pyplot(fig)
+    
+    
+def creating_plotly_chart(df):
+    import streamlit as st
+    import pandas as pd
+    import plotly.express as px
+
+    
+    chosen_asins = st.sidebar.multiselect(
+        "Select ASIN(s)", options=df["(Child) ASIN"].unique(), default=df["(Child) ASIN"].unique()
+    )
+    date_min, date_max = st.sidebar.date_input(
+        "Date range", [df["date"].min(), df["date"].max()]
+    )
+
+    
+    mask = (
+        df["(Child) ASIN"].isin(chosen_asins)
+        & (df["date"] >= pd.to_datetime(date_min).date())
+        & (df["date"] <= pd.to_datetime(date_max).date())
+    )
+    filtered = df.loc[mask]
+
+    # — build the Plotly Express figure —
+    fig = px.scatter(
+        filtered,
+        x="date",
+        y="Sessions - Total",
+        color="(Child) ASIN",
+        trendline="ols",            # automatically fit one OLS line per ASIN
+        trendline_scope="group",    # group by ASIN
+        labels={"date":"Date", "Sessions - Total":"Sessions"},
+        title="Sessions Over Time by ASIN"
+    )
+
+    # show both markers & lines
+    fig.update_traces(mode="lines+markers")
+
+    # format the x-axis to show only date
+    fig.update_xaxes(
+        dtick="D1",
+        tickformat="%Y-%m-%d",
+        tickangle=45
+    )
+
+    fig.update_layout(
+        legend_title_text="ASIN",
+        margin=dict(t=50, b=80)
+    )
+
+    # — render in Streamlit —
+    st.plotly_chart(fig, use_container_width=True)
 
 

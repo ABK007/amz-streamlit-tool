@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from st_components import st_select_multiple_files
 from functions import remove_blank_rows
-from charts import create_linear_regression_chart
+from charts import create_linear_regression_chart, creating_plotly_chart
 
 
 # setting upp page config
@@ -76,7 +76,7 @@ else:
             )
             
             
-        create_linear_regression_chart(new_df)
+        creating_plotly_chart(new_df)
     else:
         st.warning("Select at least one column to include in the output.")
         
