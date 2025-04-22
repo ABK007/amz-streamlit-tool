@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
 from st_components import st_select_multiple_files
-from functions import remove_blank_rows
-from charts import create_linear_regression_chart, creating_plotly_chart
+from functions import remove_blank_rows, read_data_file
+from charts import creating_plotly_chart
 
 
 # setting upp page config
@@ -30,10 +30,21 @@ else:
     st.write("### Combined CSV files preview")
     st.write("> Removed blank rows and duplicates from the combined CSV files")
 
-    df = remove_blank_rows(
-        df, column_name="(Child) ASIN"
-    )  # removing blank rows from the specified column
+    df = remove_blank_rows(df, column_name="(Child) ASIN")  # removing blank rows from the specified column
     df = df.drop_duplicates()  # removing duplicates
+    
+    # adding a new dataframe caontaining SKU names and tags for each ASIN
+    df_catalog = read_data_file("spreadsheets\Catalog.xlsx")
+    df_catalog = df_catalog.drop_duplicates()
+    df_catalog = remove_blank_rows(df_catalog, column_name="ASIN")
+    
+    
+    # build a Series that maps each ASIN to its SKU
+    sku_lookup = df_catalog.set_index("ASIN")["SKU"]
+
+    # create the new column by looking up every (Child) ASIN
+    df["SKU"] = df["(Child) ASIN"].map(sku_lookup)
+
 
     st.dataframe(df, height=600)
 
