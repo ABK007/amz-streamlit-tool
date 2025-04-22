@@ -14,7 +14,7 @@ def create_linear_regression_chart(df):
     df['date_num'] = df['date'].map(lambda d: d.toordinal())
 
     # 2) Figure out grid dimensions
-    asins = df['(Child) ASIN'].unique()
+    asins = df['SKU'].unique()
     n_asins = len(asins)
     ncols = 2
     nrows = math.ceil(n_asins / ncols)
@@ -31,7 +31,7 @@ def create_linear_regression_chart(df):
 
     # 4) Loop once over each ASIN & its dedicated Axes
     for ax, asin in zip(axes, asins):
-        group = df[df['(Child) ASIN'] == asin]
+        group = df[df['SKU'] == asin]
 
         # a) regression inputs
         X = group['date_num'].values.reshape(-1,1)
@@ -61,7 +61,7 @@ def create_linear_regression_chart(df):
     
 def creating_plotly_chart(df):
     """This function creates dynamic plotly liner 
-    chart and allows user to filter by ASIN and date range.
+    chart and allows user to filter by SKU and date range.
     
     param df: DataFrame
     
@@ -70,7 +70,7 @@ def creating_plotly_chart(df):
 
     
     chosen_asins = st.multiselect(
-        "Select ASIN(s)", options=df["(Child) ASIN"].unique(), default=df["(Child) ASIN"].unique()
+        "Select SKU(s)", options=df["SKU"].unique(), default=df["SKU"].unique()
     )
     date_min, date_max = st.date_input(
         "Date range", [df["date"].min(), df["date"].max()]
@@ -78,7 +78,7 @@ def creating_plotly_chart(df):
 
     
     mask = (
-        df["(Child) ASIN"].isin(chosen_asins)
+        df["SKU"].isin(chosen_asins)
         & (df["date"] >= pd.to_datetime(date_min).date())
         & (df["date"] <= pd.to_datetime(date_max).date())
     )
@@ -89,7 +89,7 @@ def creating_plotly_chart(df):
         filtered,
         x="date",
         y="Sessions - Total",
-        color="(Child) ASIN",
+        color="SKU",
         trendline="ols",            # automatically fit one OLS line per ASIN
         trendline_scope="group",    # group by ASIN
         labels={"date":"Date", "Sessions - Total":"Sessions"},
@@ -108,8 +108,8 @@ def creating_plotly_chart(df):
 
     fig.update_layout(showlegend=False)
     
-    for asin in filtered["(Child) ASIN"].unique():
-        df_asin = filtered[filtered["(Child) ASIN"] == asin].sort_values("date")
+    for asin in filtered["SKU"].unique():
+        df_asin = filtered[filtered["SKU"] == asin].sort_values("date")
         last = df_asin.iloc[-1]
         fig.add_annotation(
             x=last["date"],
