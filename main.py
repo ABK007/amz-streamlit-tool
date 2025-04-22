@@ -44,6 +44,14 @@ else:
 
     # create the new column by looking up every (Child) ASIN
     df["SKU"] = df["(Child) ASIN"].map(sku_lookup)
+    
+    # build a Series that maps each ASIN to its SKU
+    tag_lookup = df_catalog.set_index("ASIN")["Category"]
+    
+    # create the new column by looking up every (Child) ASIN
+    df["tag"] = df["(Child) ASIN"].map(tag_lookup)
+    
+    
 
 
     st.dataframe(df, height=600)
