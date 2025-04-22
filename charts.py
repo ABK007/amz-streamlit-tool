@@ -1,11 +1,10 @@
 
-import numpy as np
+
 import matplotlib.pyplot as plt
 import pandas as pd
-
 from sklearn.linear_model import LinearRegression
 import streamlit as st
-
+import plotly.express as px
 import math
 
 
@@ -61,9 +60,13 @@ def create_linear_regression_chart(df):
     
     
 def creating_plotly_chart(df):
-    import streamlit as st
-    import pandas as pd
-    import plotly.express as px
+    """This function creates dynamic plotly liner 
+    chart and allows user to filter by ASIN and date range.
+    
+    param df: DataFrame
+    
+    return: None"""
+    
 
     
     chosen_asins = st.multiselect(
@@ -103,10 +106,20 @@ def creating_plotly_chart(df):
         tickangle=45
     )
 
-    fig.update_layout(
-        legend_title_text="ASIN",
-        margin=dict(t=50, b=80)
-    )
+    fig.update_layout(showlegend=False)
+    
+    for asin in filtered["(Child) ASIN"].unique():
+        df_asin = filtered[filtered["(Child) ASIN"] == asin].sort_values("date")
+        last = df_asin.iloc[-1]
+        fig.add_annotation(
+            x=last["date"],
+            y=last["Sessions - Total"],
+            text=asin,
+            showarrow=False,
+            xanchor="left",
+            yanchor="middle",
+            font=dict(size=12)
+        )
 
     # — render in Streamlit —
     st.plotly_chart(fig, use_container_width=True)
