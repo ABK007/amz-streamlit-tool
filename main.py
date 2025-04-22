@@ -61,7 +61,7 @@ else:
     selected_columns = st.multiselect(
         "Select columns to include:",
         options=df.columns.tolist(),
-        default=["(Child) ASIN", "Title", "Sessions - Total", "date"],
+        default=["(Child) ASIN", "SKU", "tag", "Title", "Sessions - Total", "date"],
     )
 
     st.markdown("---")  # Add a separator line
@@ -95,7 +95,9 @@ else:
             )
             
             
-        creating_plotly_chart(new_df)
+        creating_plotly_chart(new_df, tag_column="tag", asin_column="(Child) ASIN", date_column="date")
+        # creating_plotly_chart(new_df, column_name="tag")
+        # creating_plotly_chart(new_df, column_name="(Child) ASIN")
     else:
         st.warning("Select at least one column to include in the output.")
         
