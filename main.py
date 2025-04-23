@@ -34,7 +34,7 @@ else:
     df = df.drop_duplicates()  # removing duplicates
     
     # adding a new dataframe caontaining SKU names and tags for each ASIN
-    df_catalog = read_data_file("spreadsheets\Catalog.xlsx")
+    df_catalog = read_data_file("spreadsheets/Catalog.xlsx")
     df_catalog = df_catalog.drop_duplicates()
     df_catalog = remove_blank_rows(df_catalog, column_name="ASIN")
     
