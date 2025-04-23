@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 
-st.title("Creating CSV file for WhatsApp Business API")
+st.title("Amazon Analytics Tool")
 
 # This function will create a file uploader widget that accepts
 # multiple CSV files and previews them and returns combined dataframe.
