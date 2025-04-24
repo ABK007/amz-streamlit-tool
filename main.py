@@ -95,7 +95,7 @@ else:
             )
             
             
-        creating_plotly_chart(new_df, tag_column="tag", asin_column="(Child) ASIN", date_column="date")
+        creating_plotly_chart(new_df, tag_column="tag", asin_column="SKU", date_column="date")
         # creating_plotly_chart(new_df, column_name="tag")
         # creating_plotly_chart(new_df, column_name="(Child) ASIN")
     else:
