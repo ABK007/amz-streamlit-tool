@@ -44,3 +44,25 @@ def read_data_file(file_path: str) -> pd.DataFrame:
     
     
     return df
+
+
+def extract_date_from_filename(file_name: str) -> pd.Timestamp:
+    """
+    Extract date from the filename and convert it to a pandas datetime object.
+    
+    Parameters:
+        file_name (str): The name of the file.
+        
+    Returns:
+        pd.Timestamp: The extracted date as a pandas datetime object.
+        
+    """
+    # Extract the date string from the filename (assuming it's in the format YYYY-MM-DD)
+    file_name_str = os.path.splitext(file_name)[0]
+    
+    date_str = file_name_str.split('_')[0]  # Assuming the date is the first part of the filename
+    
+    # Parse the date string into a pandas datetime object
+    ts = pd.to_datetime(date_str, infer_datetime_format=True)
+    
+    return ts.date()
