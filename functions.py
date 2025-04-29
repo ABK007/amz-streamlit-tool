@@ -66,3 +66,24 @@ def extract_date_from_filename(file_name: str) -> pd.Timestamp:
     ts = pd.to_datetime(date_str, infer_datetime_format=True)
     
     return ts.date()
+
+def processing_catalog_file( mapping_column: str) -> pd.Series:
+    """
+    Read the catalog file and return a DataFrame.
+    
+    Parameters:
+        mapping_column (str): The column name to be used for mapping ASINs with that column
+        
+    Returns:
+        pd.DataFrame: The DataFrame containing the data from the catalog file.
+        
+    """
+    # adding a new dataframe caontaining SKU names and tags for each ASIN
+    df_catalog = read_data_file("spreadsheets/Catalog.xlsx")
+    df_catalog = df_catalog.drop_duplicates()
+    df_catalog = remove_blank_rows(df_catalog, column_name="ASIN")
+
+    # build a Series that maps each ASIN to its SKU
+    lookup = df_catalog.set_index("ASIN")[mapping_column]
+    
+    return lookup

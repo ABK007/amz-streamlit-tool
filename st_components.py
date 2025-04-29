@@ -4,7 +4,7 @@ import os
 
 from functions import extract_date_from_filename
 
-def st_select_multiple_files_(date=False, unique_key=None):
+def st_select_multiple_files_(date=False, unique_key=None) -> pd.DataFrame:
     """ create a file uploader widget that accepts multiple spreadsheet files and returns combined dataframe.
     paratmeters:
         date: bool, if True, it will extract the date from the filename and add it to the dataframe.

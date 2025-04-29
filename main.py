@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from st_components import st_select_multiple_files_
-from functions import remove_blank_rows, read_data_file
+from functions import remove_blank_rows, processing_catalog_file
 from charts import creating_plotly_chart
 
 
@@ -34,9 +34,7 @@ if not st.button("process uploaded files"):
     )
 
 else:
-    st.markdown(f"> Total rows in combined CSV: {df.shape[0]}")
-    st.markdown(f"> Total columns in combined CSV: {df.shape[1]}")
-    st.write("### Combined CSV files preview")
+    st.write("### Combined dataframe of sessions + PPC data")
     st.write("> Removed blank rows and duplicates from the combined CSV files")
 
     df = remove_blank_rows(
@@ -48,19 +46,13 @@ else:
     # adding sku and tags to the dataframe from catalog file
 
     # adding a new dataframe caontaining SKU names and tags for each ASIN
-    df_catalog = read_data_file("spreadsheets/Catalog.xlsx")
-    df_catalog = df_catalog.drop_duplicates()
-    df_catalog = remove_blank_rows(df_catalog, column_name="ASIN")
-
-    # build a Series that maps each ASIN to its SKU
-    sku_lookup = df_catalog.set_index("ASIN")["SKU"]
+    sku_lookup = processing_catalog_file(mapping_column="SKU")
 
     # create the new column by looking up every (Child) ASIN
     df["SKU"] = df["(Child) ASIN"].map(sku_lookup)
 
-    # build a Series that maps each ASIN to its SKU
-    tag_lookup = df_catalog.set_index("ASIN")["Category"]
-
+    tag_lookup = processing_catalog_file(mapping_column="Category")
+    
     # create the new column by looking up every (Child) ASIN
     df["tag"] = df["(Child) ASIN"].map(tag_lookup)
     
@@ -119,17 +111,6 @@ else:
 
         st.dataframe(new_df, height=600)
 
-        # file_name = st.text_input("Enter file name to generate .csv file", value="mapped_output.csv")
-
-        # # Button to generate CSV
-        # if st.button("Generate CSV"):
-        #     csv_data = new_df.to_csv(index=False).encode('utf-8')
-        #     st.download_button(
-        #         label="Download CSV",
-        #         data=csv_data,
-        #         file_name=f"{file_name}",
-        #         mime="text/csv"
-        #     )
 
         creating_plotly_chart(
             new_df, tag_column="tag", asin_column="SKU", date_column="date"
