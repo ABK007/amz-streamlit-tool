@@ -15,7 +15,7 @@ def st_select_multiple_files_(date=False, unique_key=None) -> pd.DataFrame:
         
     uploaded_files = st.sidebar.file_uploader(
         "Choose a spreadsheet file:", type=["xlsx", "xls", "csv"], accept_multiple_files=True,
-        key=unique_key,  # Unique key for the file uploader
+        key=f"{unique_key}_1",  # Unique key for the file uploader
     )
     
     df_list = []  # List to hold dataframes for each uploaded file
